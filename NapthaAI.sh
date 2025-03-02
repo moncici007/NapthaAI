@@ -11,6 +11,9 @@ RESET='\e[0m'
 # NapthaAI 目录
 INSTALL_DIR="$HOME/naptha-node"
 
+# 署名
+AUTHOR="K2 节点教程分享 推特 https://x.com/BtcK241918"
+
 # 检查并安装 python3-venv 包
 check_python_venv() {
     if ! dpkg -l | grep -q "python3-venv"; then
@@ -46,24 +49,11 @@ create_virtualenv() {
     pip install docker requests # 直接安装必要的依赖
 }
 
-# 替换 PEM 文件中的私钥内容
-replace_private_key_in_pem() {
-    echo -e "${YELLOW}请输入新的私钥内容，将直接替换 PEM 文件中的私钥。${RESET}"
-    
-    # 提示用户手动输入新的私钥
-    read -p "请输入新的私钥内容: " PRIVATE_KEY
-    
-    PEM_FILE="$INSTALL_DIR/ttkklei.pem"
-    
-    if [ -f "$PEM_FILE" ]; then
-        # 使用用户输入的 PRIVATE_KEY 替换 PEM 文件中的内容
-        echo -e "${GREEN}正在替换 PEM 文件中的私钥内容...${RESET}"
-        echo -e "$PRIVATE_KEY" > "$PEM_FILE"
-        echo -e "${GREEN}PEM 文件中的私钥已成功替换！${RESET}"
-        echo -e "${RED}请务必复制并保存您的 PRIVATE_KEY，否则将无法恢复！${RESET}"
-    else
-        echo -e "${RED}PEM 文件不存在，请确认节点已安装并正确配置！${RESET}"
-    fi
+# 生成并保存 PEM 文件
+generate_pem_file() {
+    echo -e "${GREEN}正在生成 PEM 文件...${RESET}"
+    PRIVATE_KEY=$(openssl genpkey -algorithm RSA -out "$INSTALL_DIR/ttkklei.pem" -pkeyopt rsa_keygen_bits:2048)
+    echo -e "${GREEN}PEM 文件已生成并保存！${RESET}"
 }
 
 # 安装 NapthaAI 节点
@@ -75,6 +65,9 @@ install_node() {
     fi
     cd "$INSTALL_DIR"
 
+    # 生成 PEM 文件
+    generate_pem_file
+
     # 创建虚拟环境并安装依赖
     create_virtualenv
 
@@ -85,9 +78,6 @@ install_node() {
         sed -i 's/^LAUNCH_DOCKER=.*/LAUNCH_DOCKER=true/' .env
         sed -i 's/^LLM_BACKEND=.*/LLM_BACKEND=ollama/' .env
     fi
-
-    # 设置或替换 PRIVATE_KEY
-    replace_private_key_in_pem
 
     # 启动 NapthaAI 节点
     echo -e "${GREEN}启动 NapthaAI 节点...${RESET}"
@@ -144,7 +134,7 @@ uninstall_node() {
 
 # 菜单
 while true; do
-    echo -e "\n${GREEN}NapthaAI 一键管理脚本${RESET}"
+    echo -e "\n${GREEN}NapthaAI 一键管理脚本 - ${AUTHOR}${RESET}"
     echo -e "1. 安装 NapthaAI 节点"
     echo -e "2. 导出 PRIVATE_KEY"
     echo -e "3. 查看日志 (显示最后 200 行)"
