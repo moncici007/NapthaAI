@@ -49,13 +49,6 @@ create_virtualenv() {
     pip install docker requests # 直接安装必要的依赖
 }
 
-# 生成并保存 PEM 文件
-generate_pem_file() {
-    echo -e "${GREEN}正在生成 PEM 文件...${RESET}"
-    PRIVATE_KEY=$(openssl genpkey -algorithm RSA -out "$INSTALL_DIR/ttkklei.pem" -pkeyopt rsa_keygen_bits:2048)
-    echo -e "${GREEN}PEM 文件已生成并保存！${RESET}"
-}
-
 # 安装 NapthaAI 节点
 install_node() {
     install_docker
@@ -64,9 +57,6 @@ install_node() {
         git clone https://github.com/NapthaAI/naptha-node.git "$INSTALL_DIR"
     fi
     cd "$INSTALL_DIR"
-
-    # 生成 PEM 文件
-    generate_pem_file
 
     # 创建虚拟环境并安装依赖
     create_virtualenv
@@ -77,6 +67,7 @@ install_node() {
         cp .env.example .env
         sed -i 's/^LAUNCH_DOCKER=.*/LAUNCH_DOCKER=true/' .env
         sed -i 's/^LLM_BACKEND=.*/LLM_BACKEND=ollama/' .env
+        sed -i 's/^youruser=.*/youruser=root/' .env  # 设置为 root 用户
     fi
 
     # 启动 NapthaAI 节点
