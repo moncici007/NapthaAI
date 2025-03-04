@@ -11,8 +11,6 @@ RESET='\e[0m'
 # NapthaAI 目录
 INSTALL_DIR="$HOME/naptha-node"
 
-# 署名
-AUTHOR="K2 节点教程分享 推特 https://x.com/BtcK241918"
 
 # 检查并安装 python3-venv 包
 check_python_venv() {
@@ -80,7 +78,7 @@ install_node() {
 
 # 导出 PRIVATE_KEY
 export_private_key() {
-    PEM_FILE="$INSTALL_DIR/ttkklei.pem"
+    PEM_FILE="$INSTALL_DIR/moncici.pem"
     if [ -f "$PEM_FILE" ]; then
         PRIVATE_KEY=$(cat "$PEM_FILE")
         if [ -n "$PRIVATE_KEY" ]; then
@@ -125,7 +123,6 @@ uninstall_node() {
 
 # 菜单
 while true; do
-    echo -e "\n${GREEN}NapthaAI 一键管理脚本 - ${AUTHOR}${RESET}"
     echo -e "1. 安装 NapthaAI 节点"
     echo -e "2. 导出 PRIVATE_KEY"
     echo -e "3. 查看日志 (显示最后 200 行)"
