@@ -11,6 +11,7 @@ RESET='\e[0m'
 # NapthaAI 目录
 INSTALL_DIR="$HOME/naptha-node"
 
+## Author moncici_is_girl
 
 # 检查并安装 python3-venv 包
 check_python_venv() {
